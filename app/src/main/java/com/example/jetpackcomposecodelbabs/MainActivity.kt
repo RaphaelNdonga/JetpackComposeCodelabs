@@ -68,11 +68,13 @@ fun ScreenPreview(){
 }
 
 @Composable
-fun MyScreenContent(){
+fun MyScreenContent(nameList:List<String> = listOf("Raphael","Linus","John","Joy")){
     Column{
-        Greeting(name = "Android")
-        Divider(color = Color.Black)
-        Greeting(name = "Raph")
+        for(name in nameList){
+            Greeting(name = name)
+            Divider(color = Color.Black)
+        }
+        Text("The total number of people is ${nameList.size}")
     }
 
 }
