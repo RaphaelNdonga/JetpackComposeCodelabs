@@ -18,39 +18,41 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApp()
+            MyApp{
+                Greeting(name = "Raphael")
+            }
         }
     }
 }
 
 /**
- * Notice that the composable function is outside MainActivity class. This is to allow for code
- * re-usability and sharing.
+ * MyApp can also be a container function that contains all the common app configurations such as
+ * surface color and themes.
+ * The container function takes a composable function as a lambda function parameter and acts on it
+ * appropriately.
+ *
+ * Using container functions is good practice because it encourages code reusability and improves
+ * code readability.
  */
 @Composable
-fun MyApp() {
+fun MyApp(content: @Composable () -> Unit) {
     JetpackComposeCodelbabsTheme {
-        /**
-         * To change the color of a composable, you have to define a surface that contains it
-         */
         Surface(color = Color.Yellow) {
-            Greeting("Raphael")
+            content()
         }
     }
 }
 
 @Composable
 fun Greeting(name: String) {
-        /**
-         * A modifier is used to tell the UI elements how to display, layout and behave while
-         * within the parent layout.
-         */
-        Text(text = "Hello $name!",modifier = Modifier.padding(24.dp))
+    Text(text = "Hello $name!", modifier = Modifier.padding(24.dp))
 
 }
 
-@Preview(showBackground = true)
+@Preview("Text Preview")
 @Composable
 fun DefaultPreview() {
-    MyApp()
+    MyApp {
+        Greeting(name = "Raphael")
+    }
 }
