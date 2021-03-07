@@ -4,12 +4,12 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -51,22 +51,13 @@ fun Greeting(name: String) {
 
 }
 
-@Preview("Text Preview")
-@Composable
-fun DefaultPreview() {
-    MyApp {
-        Greeting(name = "Raphael")
-    }
-}
-
 @Preview("Screen Preview")
 @Composable
-fun ScreenPreview(){
+fun DefaultPreview() {
     MyApp {
         MyScreenContent()
     }
 }
-
 @Composable
 fun MyScreenContent(nameList:List<String> = listOf("Raphael","Linus","John","Joy")){
     Column{
@@ -74,7 +65,26 @@ fun MyScreenContent(nameList:List<String> = listOf("Raphael","Linus","John","Joy
             Greeting(name = name)
             Divider(color = Color.Black)
         }
-        Text("The total number of people is ${nameList.size}")
+        Text(text = "The total number of people is ${nameList.size}",modifier = Modifier.padding(24.dp))
+        Divider(color = Color.Black)
+        Counter()
     }
+}
 
+@Composable
+fun Counter(){
+    /**
+     *     mutableStateOf is how to create mutable memory in a composable function.
+     *     Why can't we use a normal variable?
+     *     Because composable functions by default are not meant to remember anything. They just
+     *     render the UI.
+     */
+    val counter = remember{ mutableStateOf(0) }
+    /**
+     * the counter value is only changed onClick.  onClick runs on the main thread, so threading
+     * issues will not be encountered.
+     */
+    Button(onClick = { ++counter.value },modifier = Modifier.padding(24.dp)){
+        Text(text = "The button has been clicked ${counter.value} times")
+    }
 }
