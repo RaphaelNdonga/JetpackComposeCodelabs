@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApp{
+            MyApp {
                 MyScreenContent()
             }
         }
@@ -58,33 +58,35 @@ fun DefaultPreview() {
         MyScreenContent()
     }
 }
+
 @Composable
-fun MyScreenContent(nameList:List<String> = listOf("Raphael","Linus","John","Joy")){
-    Column{
-        for(name in nameList){
+fun MyScreenContent(nameList: List<String> = listOf("Raphael", "Linus", "John", "Joy")) {
+    val counter = remember { mutableStateOf(0) }
+    Column {
+        for (name in nameList) {
             Greeting(name = name)
             Divider(color = Color.Black)
         }
-        Text(text = "The total number of people is ${nameList.size}",modifier = Modifier.padding(24.dp))
-        Divider(color = Color.Black)
-        Counter()
+        Text(
+            text = "The total number of people is ${nameList.size}",
+            modifier = Modifier.padding(24.dp)
+        )
+        Divider(color = Color.Black,thickness = 32.dp)
+        //The state is controlled here.
+        Counter(counter.value) { newInt ->
+            counter.value = newInt
+        }
     }
 }
 
+/**
+ * State hoisting refers to hosting the state of a composable in one function but controlling
+ * the state in another composable that calls it.
+ */
 @Composable
-fun Counter(){
-    /**
-     *     mutableStateOf is how to create mutable memory in a composable function.
-     *     Why can't we use a normal variable?
-     *     Because composable functions by default are not meant to remember anything. They just
-     *     render the UI.
-     */
-    val counter = remember{ mutableStateOf(0) }
-    /**
-     * the counter value is only changed onClick.  onClick runs on the main thread, so threading
-     * issues will not be encountered.
-     */
-    Button(onClick = { ++counter.value },modifier = Modifier.padding(24.dp)){
-        Text(text = "The button has been clicked ${counter.value} times")
+//By introducing the two parameters, state is hoisted in that it is allowed to be defined elsewhere.
+fun Counter(count: Int, updateCount: (Int) -> Unit) {
+    Button(onClick = { updateCount(count+1) }, modifier = Modifier.padding(24.dp)) {
+        Text(text = "The button has been clicked $count times")
     }
 }
