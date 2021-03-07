@@ -4,12 +4,12 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MyApp{
+            MyApp {
                 MyScreenContent()
             }
         }
@@ -51,30 +51,42 @@ fun Greeting(name: String) {
 
 }
 
-@Preview("Text Preview")
-@Composable
-fun DefaultPreview() {
-    MyApp {
-        Greeting(name = "Raphael")
-    }
-}
-
 @Preview("Screen Preview")
 @Composable
-fun ScreenPreview(){
+fun DefaultPreview() {
     MyApp {
         MyScreenContent()
     }
 }
 
 @Composable
-fun MyScreenContent(nameList:List<String> = listOf("Raphael","Linus","John","Joy")){
-    Column{
-        for(name in nameList){
+fun MyScreenContent(nameList: List<String> = listOf("Raphael", "Linus", "John", "Joy")) {
+    val counter = remember { mutableStateOf(0) }
+    Column {
+        for (name in nameList) {
             Greeting(name = name)
             Divider(color = Color.Black)
         }
-        Text("The total number of people is ${nameList.size}")
+        Text(
+            text = "The total number of people is ${nameList.size}",
+            modifier = Modifier.padding(24.dp)
+        )
+        Divider(color = Color.Black,thickness = 32.dp)
+        //The state is controlled here.
+        Counter(counter.value) { newInt ->
+            counter.value = newInt
+        }
     }
+}
 
+/**
+ * State hoisting refers to hosting the state of a composable in one function but controlling
+ * the state in another composable that calls it.
+ */
+@Composable
+//By introducing the two parameters, state is hoisted in that it is allowed to be defined elsewhere.
+fun Counter(count: Int, updateCount: (Int) -> Unit) {
+    Button(onClick = { updateCount(count+1) }, modifier = Modifier.padding(24.dp)) {
+        Text(text = "The button has been clicked $count times")
+    }
 }
