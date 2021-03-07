@@ -3,9 +3,7 @@ package com.example.jetpackcomposecodelbabs
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -27,15 +25,6 @@ class MainActivity : AppCompatActivity() {
     }
 }
 
-/**
- * MyApp can also be a container function that contains all the common app configurations such as
- * surface color and themes.
- * The container function takes a composable function as a lambda function parameter and acts on it
- * appropriately.
- *
- * Using container functions is good practice because it encourages code reusability and improves
- * code readability.
- */
 @Composable
 fun MyApp(content: @Composable () -> Unit) {
     JetpackComposeCodelbabsTheme {
@@ -62,31 +51,40 @@ fun DefaultPreview() {
 @Composable
 fun MyScreenContent(nameList: List<String> = listOf("Raphael", "Linus", "John", "Joy")) {
     val counter = remember { mutableStateOf(0) }
-    Column {
-        for (name in nameList) {
-            Greeting(name = name)
-            Divider(color = Color.Black)
+    Column(modifier = Modifier.fillMaxHeight()) {
+        //weight is used to declare that the column will fill all the unoccupied space
+        Column(modifier = Modifier.weight(1f)) {
+            for (name in nameList) {
+                Greeting(name = name)
+                Divider(color = Color.Black)
+            }
+            Text(
+                text = "The total number of people is ${nameList.size}",
+                modifier = Modifier.padding(24.dp)
+            )
+            Divider(color = Color.Black, thickness = 32.dp)
         }
-        Text(
-            text = "The total number of people is ${nameList.size}",
-            modifier = Modifier.padding(24.dp)
-        )
-        Divider(color = Color.Black,thickness = 32.dp)
-        //The state is controlled here.
         Counter(counter.value) { newInt ->
             counter.value = newInt
         }
     }
 }
 
-/**
- * State hoisting refers to hosting the state of a composable in one function but controlling
- * the state in another composable that calls it.
- */
 @Composable
-//By introducing the two parameters, state is hoisted in that it is allowed to be defined elsewhere.
 fun Counter(count: Int, updateCount: (Int) -> Unit) {
-    Button(onClick = { updateCount(count+1) }, modifier = Modifier.padding(24.dp)) {
+    Button(
+        onClick = { updateCount(count + 1) },
+        modifier = Modifier.padding(24.dp),
+        //ButtonColors are necessary for they set the background AND content colors.
+        colors = ButtonDefaults.buttonColors(
+            //Leveraging Kotlin in compose
+            backgroundColor = when (count % 3) {
+                1 -> Color.Red
+                2 -> Color.Green
+                else -> Color.Blue
+            }, contentColor = if (count % 3 == 0) Color.White else Color.Black
+        )
+    ) {
         Text(text = "The button has been clicked $count times")
     }
 }
