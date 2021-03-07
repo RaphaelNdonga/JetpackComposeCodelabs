@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -53,17 +55,7 @@ fun MyScreenContent(nameList: List<String> = listOf("Raphael", "Linus", "John", 
     val counter = remember { mutableStateOf(0) }
     Column(modifier = Modifier.fillMaxHeight()) {
         //weight is used to declare that the column will fill all the unoccupied space
-        Column(modifier = Modifier.weight(1f)) {
-            for (name in nameList) {
-                Greeting(name = name)
-                Divider(color = Color.Black)
-            }
-            Text(
-                text = "The total number of people is ${nameList.size}",
-                modifier = Modifier.padding(24.dp)
-            )
-            Divider(color = Color.Black, thickness = 32.dp)
-        }
+        NamesList(names = nameList,modifier = Modifier.weight(1f))
         Counter(counter.value) { newInt ->
             counter.value = newInt
         }
@@ -86,5 +78,15 @@ fun Counter(count: Int, updateCount: (Int) -> Unit) {
         )
     ) {
         Text(text = "The button has been clicked $count times")
+    }
+}
+
+@Composable
+fun NamesList(names: List<String>, modifier: Modifier = Modifier) {
+    LazyColumn(modifier = modifier) {
+        items(items = names){ name->
+            Greeting(name = name)
+            Divider(color = Color.Black)
+        }
     }
 }
