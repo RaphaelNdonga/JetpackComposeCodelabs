@@ -3,11 +3,15 @@ package com.example.jetpackcomposecodelbabs
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -38,7 +42,9 @@ fun MyApp(content: @Composable () -> Unit) {
 
 @Composable
 fun Greeting(name: String) {
-    Text(text = "Hello $name!", modifier = Modifier.padding(24.dp))
+    val isSelected = remember{ mutableStateOf(false)}
+    val backgroundColor by animateColorAsState(if (isSelected.value) Color.Red else Color.Transparent)
+    Text(text = "Hello $name!", modifier = Modifier.padding(24.dp).clickable { isSelected.value = !isSelected.value }.background(backgroundColor))
 
 }
 
